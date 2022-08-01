@@ -1,0 +1,6 @@
+{
+   "server-v0": {
+      "RELATIVE_MAIN": "bundle.js",
+      "SERVER_PORT": 4000
+   }
+}
