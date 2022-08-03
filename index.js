@@ -75,6 +75,7 @@ async function sync() {
    const mana_GED = {...managed};
    for (const process of processes) {
       if (process.name in mana_GED) {
+         console.log(`${process.name}: ${process.pm2_env.status}`);
          if (process.pm2_env.status === "running") {
             console.log(`MANAGED & RUNNING ${process.name}`);
             delete mana_GED[process.name];
@@ -122,6 +123,40 @@ async function add() {
    fs.writeFileSync(`${__dirname}/managed.json`, JSON.stringify(managed, null, 3));
 }
 
+
+# need to add conditional logging some time
+log_format bjork
+	'[$time_local] $http_x_api_key: "$request" {$request_body}'
+	'-> $status';
+
+server {
+	root "%SERVER_TARGET%";
+	access_log "%SERVER_TARGET%/access.log" bjork;
+
+	index index.html;
+	server_name api.axelapi.xyz;
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+	location /%SERVER_VERSION% {
+		proxy_pass http://localhost:%SERVER_PORT%;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_set_header Host $host;
+		proxy_cache_bypass $http_upgrade;
+	}
+
+	listen 443 ssl;
+	listen [::]:443 ssl ipv6only=on;
+	ssl_certificate /etc/letsencrypt/live/api.axelapi.xyz/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/api.axelapi.xyz/privkey.pem;
+	include /etc/letsencrypt/options-ssl-nginx.conf;
+	ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+
 async function start(manages_name) {
    const cfg = managed[manages_name];
    // this doesn't return a consistent thing lol
@@ -143,4 +178,5 @@ async function start(manages_name) {
          throw err;
       }
    }
+   console.log(`STARTED ${manages_name}`);
 }

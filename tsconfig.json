@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"outDir": "bin/js",
+		"strict": true,
+		"lib": ["es2020"],
+		"target": "es2020",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+		"sourceMap": false,
+		"newLine": "lf",
+		"module": "commonjs",
+	},
+	"include": ["src/**/*.ts"],
+}
