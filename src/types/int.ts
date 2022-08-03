@@ -14,4 +14,9 @@ export namespace int {
          );
       }
    }
+	export function from_str(s: string): int {
+		const i = parseInt(s, 10);
+		assert(i);
+		return i;
+	}
 }

@@ -1,14 +1,8 @@
 import fs from "fs";
 import pm2 from "pm2";
 
-process.chdir(__dirname);
-
-try {
-   const managed_raw = fs.readFileSync("managed.json", "utf8");
-   var managed = JSON.parse(managed_raw);
-} catch (e) {
-   console.log(`Couldn't read ${__dirname}/managed.json`);
-   var managed = {};
+if (process.argv[0]) {
+	
 }
 
 function get_help(...something_else) {

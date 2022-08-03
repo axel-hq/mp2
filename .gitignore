@@ -1,3 +1,4 @@
 /bin/
 /node_modules/
-/managed.json
+/config.json
+/nginx.conf
