@@ -1,28 +1,47 @@
-import fs from "fs";
-import pm2 from "pm2";
+import * as core from "./core";
+import {int} from "./types/int";
+import {AxelError, AxelTypeError, to_AxelError} from "./err";
 
-if (process.argv[0]) {
-	
-}
-
-function get_help(...something_else) {
-   throw new Error([...something_else
-      ,  "mp2 add <base64 encoded json config>"
-      ,  ""
-      ,  "type config = {"
-      ,  "   SERVER_VERSION: string;"
-      ,  "   RELATIVE_MAIN: string;"
-      ,  "   SERVER_PORT: number;"
-      ,  "};"
-      ,  ""
-      ,  "const example_config = {"
-      ,  "   SERVER_VERSION: 'v1',"
-      ,  "   RELATIVE_MAIN: 'bin/main.js'"
-      ,  "   SERVER_PORT: 4013,",
-      ,  "};"
-      ,  ""
-      ,  "mp2 subtract SERVER_NAME"
-      ,  ""
-      ,  "mp2 sync"
-   ].join("\n"))
+try {
+	switch (process.argv[2]) {
+		case "add":
+			const SERVER_VERSION: string | undefined = process.argv[3];
+			let SERVER_PORT: int | undefined;
+			let RELATIVE_MAIN: string | undefined;
+			for (const arg of process.argv.slice(4)) {
+				const port_arg = arg.match(/--SERVER_PORT:(\d+)/);
+				if (port_arg) {
+					SERVER_PORT = int.from_str(port_arg[1]);
+					continue;
+				}
+				const main_arg = arg.match(/--RELATIVE_MAIN:(.+)/);
+				if (main_arg) {
+					RELATIVE_MAIN = main_arg[1];
+				}
+			}
+			if (SERVER_VERSION)
+			if (SERVER_PORT)
+			if (RELATIVE_MAIN)
+			{
+				core.add(SERVER_VERSION, SERVER_PORT, RELATIVE_MAIN);
+				break;
+			}
+			throw new AxelTypeError(
+				"Missing argument to add!",
+				`SERVER_VERSION = ${SERVER_VERSION}`,
+				`SERVER_PORT    = ${SERVER_PORT}`,
+				`RELATIVE_MAIN  = ${RELATIVE_MAIN}`,
+			);
+		case "remove":
+		case "sync":
+		default:
+			throw new AxelTypeError(`I don't know what ${process.argv[2]} means!`);
+		}
+} catch (e) {
+	throw new AxelError(
+		to_AxelError(e),
+		"mp2 add v1 --SERVER_PORT:420 --RELATIVE_MAIN:bin/main.js",
+		"mp2 remove v1",
+		"mp2 sync",
+	);
 }

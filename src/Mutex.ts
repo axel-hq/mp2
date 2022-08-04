@@ -12,10 +12,10 @@ export class Mutex {
 		this.resolver();
 	}
 
-	lock(): Promise<void> {
-		const out = this.prom;
+	async lock(): Promise<void> {
+		await this.prom;
 		this.prom = new Promise(res => {
-			
+			this.resolver = res;
 		});
 	}
 }

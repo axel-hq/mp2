@@ -1,6 +1,8 @@
 import pm2 from "pm2";
 import {config} from "./config";
+import {AxelError} from "./err";
 import {tuple, unsound} from "./foundation";
+import {Mutex} from "./Mutex";
 import {nginx} from "./nginx";
 import {shell} from "./shell";
 import {int} from "./types/int";
@@ -57,37 +59,43 @@ export function sync(): Promise<void> {
 			if (err != null) {
 				return rej(err);
 			}
-			pm2.list((err, processes) => {
-				if (err != null) {
-					return rej(err);
-				}
-				// by the end of the for loop below, this is cleared of any
-				// processes that are already running.
-				for (const version of config.versions()) {
-					pm2.describe(nameof(version), (err, p) => {
-						
-					});
-				}
-				pm2.describe()
-				for (const process of processes) {
-					const name = unsound.cast<string>(process.name);
-					if (mp2_versions.map(nameof).includes(name)) {
-						if (unsound.shut_up(process.pm2_env?.status) === "running") {
-							console.log(`MANAGED & RUNNING ${name}`);
-							mp2_versions.delete(name);
-						} else {
-							const status = process.pm2_env?.status?.toUpperCase() ?? "UNKNOWN";
-							console.log(`MANAGED & ${status} ${name}`);
-						}
-					} else {
-						console.log(`UNKNOWN ${name}`);
+			const missing_versions: string[] = [];
+			const describe_mx = new Mutex();
+			for (const version of config.versions()) {
+				await describe_mx.lock();
+				const name = nameof(version);
+				pm2.describe(name, (err, descriptions) => {
+					if (err != null) {
+						return describe_mx.unlock();
 					}
+					if (descriptions.length === 0) {
+						console.log(`MISSING ${name}`);
+						missing_versions.push(version);
+						return describe_mx.unlock();
+					}
+					if (descriptions.length === 1) {
+						console.log(`RUNNING ${name}`);
+						return describe_mx.unlock();
+					}
+					if (descriptions.length > 1) {
+						console.log(`${name} has more than one process attached to it!`);
+						pm2.delete(name, err => {
+							if (err != null) {
+								console.log(`Failed to delete ${name}!`);
+							}
+							return describe_mx.unlock();
+						});
+					}
+				});
+			}
+			for (const version of missing_versions) {
+				const config_entry = config.get(version);
+				if (config_entry == null) {
+					throw new AxelError("Impossible");
 				}
-				for (const stopped_process of mp2_versions) {
-					const config_entry = config.get(stopped_process);
-					await start();
-				}
-			})
+				await start(version, config_entry.SERVER_PORT, config_entry.RELATIVE_MAIN);
+			}
+			res();
 		});
 	});
 }
@@ -110,6 +118,7 @@ export function start(version: string, port: int, rel_main: string): Promise<voi
 				IS_PRODUCTION: "true",
 			},
 		};
+		console.log(`STARTING ${version}`);
 		pm2.start(fig, err => {
 			if (err != null) {
 				return rej(err);
