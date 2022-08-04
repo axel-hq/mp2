@@ -11,27 +11,6 @@ try {
    var managed = {};
 }
 
-function get_help(...something_else) {
-   throw new Error([...something_else
-      ,  "mp2 add <base64 encoded json config>"
-      ,  ""
-      ,  "type config = {"
-      ,  "   SERVER_VERSION: string;"
-      ,  "   RELATIVE_MAIN: string;"
-      ,  "   SERVER_PORT: number;"
-      ,  "};"
-      ,  ""
-      ,  "const example_config = {"
-      ,  "   SERVER_VERSION: 'v1',"
-      ,  "   RELATIVE_MAIN: 'bin/main.js'"
-      ,  "   SERVER_PORT: 4013,",
-      ,  "};"
-      ,  ""
-      ,  "mp2 subtract SERVER_NAME"
-      ,  ""
-      ,  "mp2 sync"
-   ].join("\n"))
-}
 
 if (process.argv.length < 3) {
    get_help("I expected you to provide at least one argument to mp2");

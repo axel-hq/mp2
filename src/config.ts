@@ -64,7 +64,7 @@ export namespace config {
 		delete config[version];
 	}
 
-	export function versions(): Iterable<string> {
+	export function versions(): readonly string[] {
 		return object.keys(config);
 	}
 

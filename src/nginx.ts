@@ -1,5 +1,6 @@
 import fs from "fs";
 import {config} from "./config";
+import {shell} from "./shell";
 
 export namespace nginx {
 	function generate(): string {
@@ -47,11 +48,11 @@ export namespace nginx {
 		return lines.join("\n");
 	}
 
-	// write should probably shell out to nginx and ask it to verify that the
-	// file is good and then restart it
 	export function write() {
-		const nginx_config_path = "/pub/nginx.conf";
+		const nginx_config_path = "/etc/nginx/sites-enabled/all_servers.conf";
+		try { fs.unlinkSync(nginx_config_path) } catch (e) {}
 		fs.writeFileSync(nginx_config_path, generate());
+		shell("nginx", "-t");
+		shell("systemctl", "restart", "nginx");
 	}
 }
-// const /etc/nginx/sites-enabled/
