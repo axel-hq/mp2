@@ -3,7 +3,7 @@ const ts = require("@rollup/plugin-typescript");
 module.exports = {
 	input: "src/cli.ts",
 	output: {
-		file: "index.js",
+		file: "bin/index.js",
 		format: "cjs",
 		strict: true,
 	},

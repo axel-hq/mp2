@@ -33,7 +33,17 @@ try {
 				`RELATIVE_MAIN  = ${RELATIVE_MAIN}`,
 			);
 		case "remove":
+			// if SERVER_VERSION is so good, why isn't there SERVER_VERSION2?
+			const SERVER_VERSION2: string | undefined = process.argv[3];
+			if (SERVER_VERSION2) {
+				core.remove(SERVER_VERSION2);
+			}
+			throw new AxelTypeError(
+				"You forgot to provide a version to mp2 remove!",
+			);
 		case "sync":
+			core.sync();
+			break;
 		default:
 			throw new AxelTypeError(`I don't know what ${process.argv[2]} means!`);
 		}
