@@ -46,7 +46,9 @@ export namespace nginx {
 		);
 		return lines.join("\n");
 	}
-	
+
+	// write should probably shell out to nginx and ask it to verify that the
+	// file is good and then restart it
 	export function write() {
 		const nginx_config_path = "/pub/nginx.conf";
 		fs.writeFileSync(nginx_config_path, generate());
