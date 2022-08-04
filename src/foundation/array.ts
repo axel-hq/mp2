@@ -21,7 +21,6 @@ export function assert(u: unknown): asserts u is array {
 	}
 }
 
-import * as _array from "./array";
 // sufferage
 export function typed
 <
@@ -36,19 +35,19 @@ export function typed
 	& (C extends reflect.reinterpreter<T> ? reflect.reinterpreter<T[], unknown> : {})
 )
 {
-	const view: reflect.view = {typename: `${c.typename} ${_array.typename}`};
+	const view: reflect.view = {typename: `${c.typename} array`};
 	
 	let validator: Partial<reflect.validator<T[], unknown>>;
 	if (c.is) {
-		const is: reflect.validator<T>["is"] = c.is;
+		const element_is: reflect.validator<T>["is"] = c.is;
 		validator = {
 			is(u: unknown): u is T[] {
-				if (_array.is(u)) {}
+				if (is(u)) {}
 				else {
 					return false;
 				}
 				for (const elem of u) {
-					if (is(elem)) {}
+					if (element_is(elem)) {}
 					else {
 						return false;
 					}
@@ -62,12 +61,12 @@ export function typed
 	
 	let reinterpreter: Partial<reflect.reinterpreter<T[], unknown>>;
 	if (c.assert) {
-		const assert: reflect.reinterpreter<T>["assert"] = c.assert;
+		const element_assert: reflect.reinterpreter<T>["assert"] = c.assert;
 		reinterpreter = {
 			assert(u: unknown): asserts u is T[] {
-				_array.assert(u);
+				assert(u);
 				for (const elem of u) {
-					assert(elem);
+					element_assert(elem);
 				}
 			},
 		};
@@ -80,7 +79,7 @@ export function typed
 		const {from} = c;
 		transformer = {
 			from(u: unknown): T[] {
-				_array.assert(u);
+				assert(u);
 				return u.map(from);
 			},
 		};
