@@ -50,7 +50,9 @@ export namespace config {
 		assert(obj);
 		config = obj;
 	} catch (e) {
+		console.log("----------- THIS IS FINE. I'M JUST LETTING YOU KNOW -----------");
 		console.log(`Something went wrong while reading ${filename}.`, e);
+		console.log("---------------------------------------------------------------");
 	}
 	export function write() {
 		fs.writeFileSync(filename, JSON.stringify(config, null, '\t'));

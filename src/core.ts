@@ -119,6 +119,7 @@ export function start(version: string, port: int, rel_main: string): Promise<voi
 			},
 		};
 		console.log(`STARTING ${version}`);
+		console.log(`SCRIPT = ${SERVER_ROOT}/${rel_main}`);
 		pm2.start(fig, err => {
 			if (err != null) {
 				return rej(err);

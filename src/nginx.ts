@@ -6,16 +6,20 @@ export namespace nginx {
 	function generate(): string {
 		const lines = [];
 		lines.push(
+			"log_format bjork",
+			`\t'[$time_local] $http_x_api_key: "$request" {$request_body}'`,
+			"\t'-> $status';",
+			"",
 			"server {",
-			"\troot /pub/;",
-			"\taccess_log /pub/mp2/access.log bjork;",
+			"\troot /pub;",
+			"\taccess_log /pub/access.log bjork;",
 			"",
-			"index /pub/mp2/index.html",
-			"server_name api.axelapi.xyz;",
+			"\tindex /pub/mp2/index.html;",
+			"\tserver_name api.axelapi.xyz;",
 			"",
-			"location / {",
-			"\ttry files $uri $uri/ =404;",
-			"}",
+			"\tlocation / {",
+			"\t\ttry_files $uri $uri/ =404;",
+			"\t}",
 			"",
 		);
 		for (const version of config.versions()) {
@@ -26,12 +30,13 @@ export namespace nginx {
 			}
 			lines.push(
 				`\tlocation /${version} {`,
-				`\t\tproxy_pass http://localhost:${entry.SERVER_PORT}`,
+				`\t\tproxy_pass http://localhost:${entry.SERVER_PORT};`,
 				"\t\tproxy_http_version 1.1;",
 				"\t\tproxy_set_header Upgrade $http_upgrade;",
 				'\t\tproxy_set_header Connection "upgrade";',
 				"\t\tproxy_set_header Host $host;",
 				"\t\tproxy_cache_bypass $http_upgrade;",
+				"\t}",
 				"",
 			);
 		}
