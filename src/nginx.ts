@@ -1,6 +1,6 @@
 import fs from "fs";
-import {config} from "./config";
 import {shell} from "./shell";
+import {config} from "./config";
 
 export namespace nginx {
 	function generate(): string {

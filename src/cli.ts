@@ -1,4 +1,5 @@
 import * as core from "./core";
+
 import {int} from "./types/int";
 import {AxelError, AxelTypeError, to_AxelError} from "./err";
 
@@ -10,13 +11,14 @@ try {
 			let RELATIVE_MAIN: string | undefined;
 			for (const arg of process.argv.slice(4)) {
 				const port_arg = arg.match(/--SERVER_PORT:(\d+)/);
-				if (port_arg) {
+				if (port_arg && port_arg[1]) {
 					SERVER_PORT = int.from_str(port_arg[1]);
 					continue;
 				}
 				const main_arg = arg.match(/--RELATIVE_MAIN:(.+)/);
 				if (main_arg) {
 					RELATIVE_MAIN = main_arg[1];
+					continue;
 				}
 			}
 			if (SERVER_VERSION)

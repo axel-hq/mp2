@@ -26,5 +26,5 @@ Make the server directory structure like so:
 Individual server versions should invoke mp2 in their deploy scripts.
 
 ```
-node /pub/mp2 eyJzZXJ2ZXJfbmFtZSI6InNlcnZlci12MSIsInJlbGF0aXZlX21haW4iOiJiaW4vbWFpbi5qcyIsInNlcnZlcl9wb3J0Ijo0MDEzfQ==
+node /pub/mp2 v1 --SERVER_PORT:4013 --RELATIVE_MAIN:bin/main.js
 ```

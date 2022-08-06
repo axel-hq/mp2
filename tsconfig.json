@@ -10,6 +10,7 @@
 		"sourceMap": false,
 		"newLine": "lf",
 		"module": "esnext",
+		"noUncheckedIndexedAccess": true,
 	},
 	"include": ["src/**/*.ts"],
 }
