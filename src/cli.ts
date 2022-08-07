@@ -39,10 +39,9 @@ try {
 			const SERVER_VERSION2: string | undefined = process.argv[3];
 			if (SERVER_VERSION2) {
 				core.remove(SERVER_VERSION2);
+				break;
 			}
-			throw new AxelTypeError(
-				"You forgot to provide a version to mp2 remove!",
-			);
+			throw new AxelTypeError("You forgot to provide a version to mp2 remove!");
 		case "sync":
 			core.sync();
 			break;
