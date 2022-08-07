@@ -32,10 +32,10 @@ export namespace nginx {
 				`\tlocation /${version} {`,
 				`\t\tproxy_pass http://localhost:${entry.SERVER_PORT};`,
 				"\t\tproxy_http_version 1.1;",
-				"\t\tproxy_set_header Upgrade $http_upgrade;",
-				'\t\tproxy_set_header Connection "upgrade";',
 				"\t\tproxy_set_header Host $host;",
 				"\t\tproxy_cache_bypass $http_upgrade;",
+				'\t\tproxy_set_header Connection "upgrade";',
+				"\t\tproxy_set_header Upgrade $http_upgrade;",
 				"\t}",
 				"",
 			);
