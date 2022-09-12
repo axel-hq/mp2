@@ -1,5 +1,5 @@
 setlocal
-@set SSH_TARGET=root@api.axelapi.xyz
+@set SSH_TARGET=root@api.axel.dev
 @set DEST=/pub/mp2
 @call npm install
 @make

@@ -3,7 +3,7 @@
 ifeq ($(OS), Windows_NT)
 	PATH := $/node_modules\.bin;$(PATH)
 else
-	PATH := $/node_modules/.bin:$(PATH)
+	$(error This script only works on Windows!)
 endif
 
 rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2)$(filter $(subst *,%,$2),$d))
